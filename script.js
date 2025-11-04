@@ -1,9 +1,8 @@
 const $ = s => document.querySelector(s);
 const $$ = s => document.querySelectorAll(s);
 
-// Klant-side limieten / opslag
-const CART_KEY = 'stolt_cart_v1';
-const ORDERED_KEY = 'stolt_ordered_once_v1'; // zapamiętuje co użytkownik już kiedyś zamówił (1 sztuka / artykuł)
+const CART_KEY = 'stolt_cart_v3';
+const ORDERED_KEY = 'stolt_ordered_once_v3';
 
 function load(key, fallback){ try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback)); } catch(e){ return fallback; } }
 function save(key, value){ localStorage.setItem(key, JSON.stringify(value)); }
@@ -11,135 +10,93 @@ function save(key, value){ localStorage.setItem(key, JSON.stringify(value)); }
 function loadCart(){ return load(CART_KEY, []); }
 function saveCart(items){ save(CART_KEY, items); }
 
-function isAlreadyOrdered(id){
-  const set = new Set(load(ORDERED_KEY, []));
-  return set.has(id);
-}
-function markOrdered(ids){
-  const set = new Set(load(ORDERED_KEY, []));
-  ids.forEach(id => set.add(id));
-  save(ORDERED_KEY, [...set]);
-}
+function isOrdered(id){ return new Set(load(ORDERED_KEY, [])).has(id); }
+function addOrdered(ids){ const s = new Set(load(ORDERED_KEY, [])); ids.forEach(i=>s.add(i)); save(ORDERED_KEY, [...s]); }
 
-// Render winkelwagen + payload do formularza
 function renderCart(){
   const items = loadCart();
-  const list = $('#cart-items');
-  list.innerHTML = '';
-  let totalCount = 0;
+  const ul = $('#cart-items'); ul.innerHTML = '';
   items.forEach(it => {
     const li = document.createElement('li');
-    const left = document.createElement('div');
-    left.textContent = `${it.name}`;
-    const right = document.createElement('div');
-    right.className = 'qty';
-    // limit 1 sztuka — nie pokazujemy +/- tylko usuń
-    const del = document.createElement('button'); del.textContent = '✕';
-    del.title = 'Verwijderen';
-    del.onclick = ()=> removeItem(it.id);
-    right.append(del);
-    li.append(left, right);
-    list.append(li);
-    totalCount += 1;
+    li.textContent = `${it.name} — maat: ${it.size}`;
+    const del = document.createElement('button'); del.textContent = '✕'; del.onclick = ()=>removeItem(it.id);
+    li.appendChild(del);
+    ul.appendChild(li);
   });
-  $('#cart-count').textContent = totalCount;
-
-  // payload
-  $('#order-products').value = items.map(i => i.name).join(', ');
-  $('#order-qty').value = items.map(_ => 1).join(', ');
-  $('#order-total').value = String(totalCount);
-  $('#order-notes-hidden').value = $('#order-notes').value || '';
-
+  $('#cart-count').textContent = String(items.length);
+  $('#order-products').value = items.map(i=>i.name).join(', ');
+  $('#order-sizes').value = items.map(i=>i.size).join(', ');
+  $('#order-total').value = String(items.length);
   $('#submit-order').disabled = items.length === 0;
 }
 
-function addToCart(prod){
-  const items = loadCart();
-  if(items.find(i => i.id === prod.id)) return; // już w koszyku
-  items.push(prod);
-  saveCart(items);
-  renderCart();
-}
-
 function removeItem(id){
-  let items = loadCart().filter(i => i.id !== id);
-  saveCart(items);
-  renderCart();
-  // Przywróć przycisk i "oddaj" 1 sztukę do lokalnego stanu
+  saveCart(loadCart().filter(i=>i.id!==id));
   const card = document.querySelector(`.card[data-id="${id}"]`);
   if(card){
-    const btn = card.querySelector('button.add');
-    const stockEl = card.querySelector('.stock-count');
-    btn.textContent = 'Bestellen';
-    btn.disabled = false;
-    stockEl.textContent = String(Number(stockEl.textContent) + 1);
+    const base = Number(card.getAttribute('data-stock'));
+    const countEl = card.querySelector('.stock-count');
+    countEl.textContent = String(Number(countEl.textContent)+1);
+    const btn = card.querySelector('.add');
+    btn.textContent = 'Bestellen'; btn.disabled = false;
   }
+  renderCart();
 }
 
-function initCatalog(){
+function initProducts(){
   $$('.card').forEach(card => {
-    const btn = card.querySelector('button.add');
-    const stockEl = card.querySelector('.stock-count');
     const id = card.dataset.id;
-    const name = card.dataset.name;
+    const btn = card.querySelector('.add');
+    const select = card.querySelector('select.size');
+    const countEl = card.querySelector('.stock-count');
+    countEl.textContent = card.getAttribute('data-stock') || '0';
 
-    // zablokuj jeśli 0 lub jeśli wcześniej zamówiono
-    if(Number(stockEl.textContent) <= 0 || isAlreadyOrdered(id)){
-      btn.textContent = isAlreadyOrdered(id) ? 'Besteld ✓' : 'Niet beschikbaar';
+    if(isOrdered(id) || Number(countEl.textContent) <= 0){
+      btn.textContent = isOrdered(id) ? 'Besteld ✓' : 'Niet beschikbaar';
       btn.disabled = true;
     }
 
     btn.addEventListener('click', () => {
-      const stock = Number(stockEl.textContent);
-      if(stock <= 0) return;
-      // dodaj 1 sztukę i zmniejsz lokalny stan
-      addToCart({ id, name });
-      stockEl.textContent = String(stock - 1);
-      btn.textContent = 'Besteld ✓';
-      btn.disabled = true;
+      const size = select.value;
+      if(!size){ alert('Kies eerst een maat.'); return; }
+      const stock = Number(countEl.textContent);
+      if(stock <= 0 || isOrdered(id)) return;
+
+      const items = loadCart();
+      if(items.find(i=>i.id===id)) return; // 1 sztuka
+      items.push({ id, name: card.dataset.name, size });
+      saveCart(items);
+      countEl.textContent = String(stock - 1);
+      btn.textContent = 'Besteld ✓'; btn.disabled = true;
+      renderCart();
     });
   });
 }
 
 function initForm(){
-  renderCart();
-
-  $('#order-notes').addEventListener('input', ()=>{
-    $('#order-notes-hidden').value = $('#order-notes').value || '';
-  });
-
   $('#reset-cart').addEventListener('click', ()=>{
     if(confirm('Winkelwagen resetten?')){
-      localStorage.removeItem(CART_KEY);
-      renderCart();
-      // przywróć guziki i lokalny stock
+      saveCart([]); renderCart();
       $$('.card').forEach(card => {
-        const btn = card.querySelector('button.add');
         const base = Number(card.getAttribute('data-stock'));
         card.querySelector('.stock-count').textContent = String(base);
-        btn.textContent = isAlreadyOrdered(card.dataset.id) ? 'Besteld ✓' : 'Bestellen';
-        btn.disabled = isAlreadyOrdered(card.dataset.id);
+        const btn = card.querySelector('.add');
+        btn.textContent = isOrdered(card.dataset.id) ? 'Besteld ✓' : 'Bestellen';
+        btn.disabled = isOrdered(card.dataset.id);
       });
     }
   });
 
-  // Po wysłaniu — oznacz produkty jako "zamówione" (1 sztuka / artykuł) i wyczyść koszyk
   $('#order-form').addEventListener('submit', () => {
-    const ids = loadCart().map(i => i.id);
-    markOrdered(ids);
+    addOrdered(loadCart().map(i=>i.id));
     saveCart([]);
   });
 }
 
 function init(){
-  // Ustaw wstępne liczniki zgodnie z data-stock
-  $$('.card').forEach(card => {
-    const base = Number(card.getAttribute('data-stock') || '0');
-    card.querySelector('.stock-count').textContent = String(base);
-  });
-  initCatalog();
+  initProducts();
   initForm();
-  $('#year').textContent = new Date().getFullYear();
+  renderCart();
+  const y = document.getElementById('year'); if(y) y.textContent = new Date().getFullYear();
 }
-
 document.addEventListener('DOMContentLoaded', init);

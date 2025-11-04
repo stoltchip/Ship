@@ -3,150 +3,162 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Stolt Haven Moerdijk – Magazijnuitgifte (Petrochemie)</title>
-  <meta name="description" content="Interne magazijnuitgifte voor medewerkers. Bestel alleen items op de goedgekeurde lijst.">
+  <title>Stolt Haven Moerdijk – Magazijnuitgifte</title>
+  <meta name="description" content="Interne magazijnuitgifte (petrochemie). Bestellen: 1 stuk per artikel, alleen wat op de lijst staat.">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<header class="wrap header">
-  <!--
-    LOGO:
-    - Najprościej: zostaw tytuł tekstowy poniżej.
-    - Jeśli chcesz grafikę, wstaw <img src="LINK_DO_LOGO" alt="Stolt Haven Moerdijk"> zamiast <h1>.
-  -->
-  <h1 class="brand"><span class="s">S</span>tolt Haven Moerdijk <small>Magazijnuitgifte</small></h1>
-  <nav>
-    <a href="#cat-werkkleding">Werkkleding</a>
-    <a href="#cat-veiligheid">Veiligheid</a>
-    <a href="#cat-chemie">Chemie</a>
-    <a href="#cart">Winkelwagen</a>
-  </nav>
+<header class="bar">
+  <div class="wrap row">
+    <div class="brand">
+      <img src="logo_stolt.png" alt="Stolt-Nielsen" class="logo">
+      <div class="title">
+        <strong>Stolt Haven Moerdijk</strong>
+        <span>Magazijnuitgifte – Petrochemie</span>
+      </div>
+    </div>
+  </div>
 </header>
 
 <main class="wrap">
-  <section class="notice">
-    <strong>Let op:</strong> Bestellen kan alleen wat op de lijst staat. Maximaal <u>1 stuk per artikel</u> per medewerker.
-    Voorraad aanpassen kan alleen door magazijnbeheer (door het bestand te bewerken).
-  </section>
+  <section class="notice">Bestellen kan uitsluitend voor onderstaande artikelen. <b>Max. 1 stuk per artikel</b>. Voorraad is zichtbaar bij elk product.</section>
 
-  <!-- WERKKLEDING -->
-  <h2 id="cat-werkkleding">Werkkleding</h2>
-  <section class="grid">
-    <article class="card" data-id="bw" data-name="Bodywarmer" data-stock="12">
-      <img src="https://images.unsplash.com/photo-1548883354-7622d3dfd99c?q=80&w=1200&auto=format&fit=crop" alt="Bodywarmer">
+  <h2>Magazijnartikelen</h2>
+  <section class="grid" id="products">
+
+    <!-- Bodywarmer -->
+    <article class="card" data-id="bodywarmer" data-name="Bodywarmer" data-stock="12" data-type="kleding">
+      <img src="bodywarmer_hivis.webp" alt="Bodywarmer">
       <h3>Bodywarmer</h3>
-      <p>Gewatteerde bodywarmer voor buitenwerk.</p>
+      <p>Warme bodywarmer met reflecterende strepen, ideaal voor buitenwerk.</p>
       <div class="meta">
-        <span class="stock">Nog <span class="stock-count">12</span> beschikbaar</span>
+        <span class="stock">Voorraad: <b class="stock-count">12</b> stuks</span>
+        <label class="maat">
+          <span>Maat</span>
+          <select class="size">
+            <option value="">Kies maat</option>
+            <option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option>
+          </select>
+        </label>
       </div>
-      <div class="btns"><button class="add">Bestellen</button></div>
+      <button class="add">Bestellen</button>
     </article>
 
-    <article class="card" data-id="jas" data-name="Jas" data-stock="10">
-      <img src="https://images.unsplash.com/photo-1539533113208-f6df8cc8b543?q=80&w=1200&auto=format&fit=crop" alt="Werkjas">
-      <h3>Jas</h3>
-      <p>Robuuste werkjas, wind- en waterafstotend.</p>
+    <!-- Werkjas -->
+    <article class="card" data-id="werkjas" data-name="Werkjas" data-stock="10" data-type="kleding">
+      <img src="werkjas_hivis.webp" alt="Werkjas">
+      <h3>Werkjas</h3>
+      <p>Beschermende werkjas met reflectie, wind- en waterdicht.</p>
       <div class="meta">
-        <span class="stock">Nog <span class="stock-count">10</span> beschikbaar</span>
+        <span class="stock">Voorraad: <b class="stock-count">10</b> stuks</span>
+        <label class="maat">
+          <span>Maat</span>
+          <select class="size">
+            <option value="">Kies maat</option>
+            <option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option>
+          </select>
+        </label>
       </div>
-      <div class="btns"><button class="add">Bestellen</button></div>
+      <button class="add">Bestellen</button>
     </article>
 
-    <article class="card" data-id="thermo" data-name="Thermo-onderjas (zwart)" data-stock="15">
-      <img src="https://images.unsplash.com/photo-1542326237-94b1c5a8cabd?q=80&w=1200&auto=format&fit=crop" alt="Thermo-onderjas zwart">
-      <h3>Thermo-onderjas (zwart)</h3>
-      <p>Ademend thermoshirt, kleur zwart.</p>
+    <!-- Schoenen laag -->
+    <article class="card" data-id="schoenen-laag" data-name="Veiligheidsschoenen (laag)" data-stock="8" data-type="obuwie">
+      <img src="schoenen_atlas_laag.jpg" alt="Veiligheidsschoenen (laag)">
+      <h3>Veiligheidsschoenen (laag)</h3>
+      <p>Lichte veiligheidsschoenen met stalen neus en antislip zool.</p>
       <div class="meta">
-        <span class="stock">Nog <span class="stock-count">15</span> beschikbaar</span>
+        <span class="stock">Voorraad: <b class="stock-count">8</b> stuks</span>
+        <label class="maat">
+          <span>Maat</span>
+          <select class="size">
+            <option value="">Kies maat</option>
+            <option>39</option><option>40</option><option>41</option><option>42</option><option>43</option><option>44</option><option>45</option><option>46</option>
+          </select>
+        </label>
       </div>
-      <div class="btns"><button class="add">Bestellen</button></div>
+      <button class="add">Bestellen</button>
     </article>
 
-    <article class="card" data-id="winter" data-name="Winterschoenen" data-stock="8">
-      <img src="https://images.unsplash.com/photo-1598899134739-24b0fb5a05dd?q=80&w=1200&auto=format&fit=crop" alt="Winterschoenen S3">
-      <h3>Winterschoenen</h3>
-      <p>Gevoerde veiligheidsschoenen S3 voor koude omstandigheden.</p>
+    <!-- Laarzen hoog -->
+    <article class="card" data-id="laarzen-hoog" data-name="Veiligheidslaarzen (hoog)" data-stock="6" data-type="obuwie">
+      <img src="laarzen_atlas_hoog.jpg" alt="Veiligheidslaarzen (hoog)">
+      <h3>Veiligheidslaarzen (hoog)</h3>
+      <p>Waterdichte laarzen met stalen neus, geschikt voor petrochemische omgeving.</p>
       <div class="meta">
-        <span class="stock">Nog <span class="stock-count">8</span> beschikbaar</span>
+        <span class="stock">Voorraad: <b class="stock-count">6</b> stuks</span>
+        <label class="maat">
+          <span>Maat</span>
+          <select class="size">
+            <option value="">Kies maat</option>
+            <option>39</option><option>40</option><option>41</option><option>42</option><option>43</option><option>44</option><option>45</option><option>46</option>
+          </select>
+        </label>
       </div>
-      <div class="btns"><button class="add">Bestellen</button></div>
+      <button class="add">Bestellen</button>
     </article>
 
-    <article class="card" data-id="zomer" data-name="Zomerschoenen" data-stock="6">
-      <img src="https://images.unsplash.com/photo-1552346154-21d32810aba3?q=80&w=1200&auto=format&fit=crop" alt="Zomerschoenen S1P">
-      <h3>Zomerschoenen</h3>
-      <p>Lichte veiligheidsschoenen S1P voor warme dagen.</p>
+    <!-- Chemiepak -->
+    <article class="card" data-id="chemiepak" data-name="Chemiepak (groen)" data-stock="5" data-type="chemie">
+      <img src="chemiepak_groen.jpg" alt="Chemiepak (groen)">
+      <h3>Chemiepak (groen)</h3>
+      <p>Volledig chemisch bestendig pak voor gebruik in risicovolle zones.</p>
       <div class="meta">
-        <span class="stock">Nog <span class="stock-count">6</span> beschikbaar</span>
+        <span class="stock">Voorraad: <b class="stock-count">5</b> stuks</span>
+        <label class="maat">
+          <span>Maat</span>
+          <select class="size">
+            <option value="">Kies maat</option>
+            <option>M</option><option>L</option><option>XL</option><option>XXL</option>
+          </select>
+        </label>
       </div>
-      <div class="btns"><button class="add">Bestellen</button></div>
+      <button class="add">Bestellen</button>
     </article>
-  </section>
 
-  <!-- VEILIGHEID -->
-  <h2 id="cat-veiligheid">Veiligheidsuitrusting</h2>
-  <section class="grid">
-    <article class="card" data-id="laarzen" data-name="Chemie laarzen" data-stock="10">
-      <img src="https://images.unsplash.com/photo-1617957743093-d3e395e6d0e0?q=80&w=1200&auto=format&fit=crop" alt="Chemie laarzen">
+    <!-- Chemie laarzen -->
+    <article class="card" data-id="chemie-laarzen" data-name="Chemie laarzen" data-stock="10" data-type="chemie">
+      <img src="boots_dunlop.jpg" alt="Chemie laarzen">
       <h3>Chemie laarzen</h3>
-      <p>Bestand tegen chemicaliën; geschikt voor spill-response.</p>
+      <p>Chemisch resistente laarzen met versterkte neus en zool.</p>
       <div class="meta">
-        <span class="stock">Nog <span class="stock-count">10</span> beschikbaar</span>
+        <span class="stock">Voorraad: <b class="stock-count">10</b> stuks</span>
+        <label class="maat">
+          <span>Maat</span>
+          <select class="size">
+            <option value="">Kies maat</option>
+            <option>39</option><option>40</option><option>41</option><option>42</option><option>43</option><option>44</option><option>45</option><option>46</option>
+          </select>
+        </label>
       </div>
-      <div class="btns"><button class="add">Bestellen</button></div>
+      <button class="add">Bestellen</button>
     </article>
+
   </section>
 
-  <!-- CHEMIE -->
-  <h2 id="cat-chemie">Chemie</h2>
-  <section class="grid">
-    <article class="card" data-id="chemiepak" data-name="Chemiepak" data-stock="5">
-      <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=1200&auto=format&fit=crop" alt="Chemiepak">
-      <h3>Chemiepak</h3>
-      <p>Volledig beschermend chemiepak voor intensief gebruik.</p>
-      <div class="meta">
-        <span class="stock">Nog <span class="stock-count">5</span> beschikbaar</span>
-      </div>
-      <div class="btns"><button class="add">Bestellen</button></div>
-    </article>
-  </section>
-
-  <!-- WINKELWAGEN / BESTELLING -->
-  <section id="cart" class="wrap-narrow cart">
+  <section id="cart" class="cart">
     <h2>Winkelwagen</h2>
     <ul id="cart-items"></ul>
-    <div class="cart-summary">
-      <span>Totaal artikelen:</span> <strong id="cart-count">0</strong>
-    </div>
+    <div class="cart-summary">Totaal artikelen: <b id="cart-count">0</b></div>
 
-    <h3>Bestelling verzenden</h3>
+    <h3>Bestelling</h3>
     <form id="order-form" action="https://formsubmit.co/kabanekna102@gmail.com" method="POST">
-      <!-- FormSubmit configuratie -->
-      <input type="hidden" name="_subject" value="Nieuwe magazijnbestelling – Stolt Haven Moerdijk">
+      <input type="hidden" name="_subject" value="Magazijnbestelling – Stolt Haven Moerdijk">
       <input type="hidden" name="_captcha" value="false">
       <input type="hidden" name="_template" value="table">
-      <!-- Payload -->
       <input type="hidden" name="producten" id="order-products">
-      <input type="hidden" name="aantallen" id="order-qty">
-      <input type="hidden" name="totaal_aantal" id="order-total">
-      <input type="hidden" name="opmerkingen" id="order-notes-hidden">
-      <!-- Gegevens medewerker -->
-      <div class="form-grid">
-        <input type="text" name="naam" placeholder="Naam en achternaam" required>
-        <input type="text" name="afdeling" placeholder="Afdeling (optioneel)">
-        <input type="email" name="email" placeholder="Jouw e‑mail" required>
-        <textarea id="order-notes" placeholder="Opmerkingen voor magazijn (optioneel)"></textarea>
+      <input type="hidden" name="maten" id="order-sizes">
+      <input type="hidden" name="totaal" id="order-total">
+      <div class="form-row">
+        <input type="text" name="naam" placeholder="Naam (verplicht)" required>
+        <button type="submit" id="submit-order" disabled>Bestelling versturen</button>
+        <button type="button" id="reset-cart" class="secondary">Winkelwagen resetten</button>
       </div>
-      <button type="submit" id="submit-order" disabled>Bestelling verzenden</button>
-      <button type="button" id="reset-cart" class="secondary">Winkelwagen resetten</button>
-      <p class="hint">Alleen 1 stuk per artikel. Voorraad wijzigen: open dit bestand en pas <code>data-stock="…"</code> aan.</p>
     </form>
   </section>
 </main>
 
-<footer class="wrap footer">
-  <p>© <span id="year"></span> Stolt Haven Moerdijk – Magazijnuitgifte</p>
-</footer>
+<footer class="foot"><div class="wrap">© <span id="year"></span> Stolt Haven Moerdijk – interne toepassing</div></footer>
 
 <script src="script.js"></script>
 </body>
