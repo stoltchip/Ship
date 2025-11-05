@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Stolt Haven Moerdijk – Magazijnuitgifte</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="logo" aria-hidden="true">S</div>
+    <div>
+      <div class="title">Stolt Haven Moerdijk – Magazijnuitgifte
+        <small>Interne bestellingen voor werkkleding, veiligheid & chemie</small>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <h2 class="section-title">Werkkleding</h2>
+    <section class="grid" id="grid-werkkleding"></section>
+
+    <h2 class="section-title">Veiligheid</h2>
+    <section class="grid" id="grid-veiligheid"></section>
+
+    <h2 class="section-title">Chemie</h2>
+    <section class="grid" id="grid-chemie"></section>
+
+    <div class="footer">
+      <h3 class="section-title" style="margin-top:0">Bestelling afronden</h3>
+      <form id="order-form">
+        <div class="formrow">
+          <label for="naam">Naam<span style="color:var(--brand)"> *</span></label>
+          <input id="naam" name="naam" type="text" placeholder="Voor- en achternaam" required />
+        </div>
+        <div class="notice small">Eén stuk per product. Kies eerst de maat bij elk gewenst product en klik <b>Bestellen</b>. Daarna verstuur de bestelling hieronder.</div>
+        <hr class="sep" />
+        <button class="btn" id="send-btn" type="submit">Bestelling versturen</button>
+        <div class="small notice">E-mailadres voor verzending is verborgen. (Mail wordt geadresseerd aan het magazijn.)</div>
+        <div id="result" class="small" style="margin-top:8px;"></div>
+      </form>
+    </div>
+
+    <p class="small" style="opacity:.7;margin-top:12px">© Stolt Haven Moerdijk • Intern systeem • Layout: donker met gele accenten.</p>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
