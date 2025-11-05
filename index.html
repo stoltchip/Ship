@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Stolt Haven Moerdijk – Magazijnuitgifte</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="header">
+    <img src="img/stolt_nielsen_logo.png" alt="Stolt-Nielsen" />
+    <div class="title">
+      Magazijnuitgifte – Petrochemie
+      <small>Interne bestellingen • Stolt Haven Moerdijk</small>
+    </div>
+    <div class="tabs">
+      <button class="tab active" id="tab-employee">Werknemer</button>
+      <button class="tab" id="tab-admin">Beheer (admin)</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Employee panel -->
+    <section id="employee-panel">
+      <h2 class="section-title">Magazijnartikelen</h2>
+      <section class="grid" id="grid"></section>
+
+      <div class="footer">
+        <h3 class="section-title" style="margin-top:0">Bestelling afronden</h3>
+        <form id="order-form">
+          <label class="small" for="naam">Naam <span style="color:var(--brand)">*</span></label>
+          <input id="naam" name="naam" type="text" placeholder="Voor- en achternaam" required />
+          <div class="small notice">Eén stuk per product. Kies maat (met zichtbare voorraad per maat) en klik <b>Bestellen</b>.</div>
+          <hr class="sep"/>
+          <button id="send-btn" class="btn" type="submit">Bestelling versturen</button>
+          <div id="result" class="small notice"></div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Admin panel -->
+    <section id="admin-panel" class="admin-panel">
+      <h2 class="section-title">Beheer – Voorraad & Producten</h2>
+
+      <div class="footer">
+        <h3 class="section-title" style="margin-top:0">Bestaande producten</h3>
+        <table class="table" id="admin-table">
+          <thead>
+            <tr>
+              <th>Product</th><th>Maat</th><th>Voorraad</th><th>Acties</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div class="footer" style="margin-top:14px">
+        <h3 class="section-title" style="margin-top:0">Nieuw product toevoegen</h3>
+        <form id="add-form">
+          <div class="row">
+            <input type="text" id="add-naam" placeholder="Naam" required />
+            <input type="text" id="add-img" placeholder="Bestandsnaam obrazu (np. bodywarmer_hiVis.webp)" required />
+          </div>
+          <textarea id="add-oms" rows="3" placeholder="Omschrijving" required></textarea>
+          <div class="row">
+            <input type="text" id="add-maten" placeholder="Maten po przecinku (np. S,M,L,XL,XXL lub 39,40,...)" required />
+            <input type="number" id="add-qty" placeholder="Startowa ilość na każdą wielkość (np. 1)" min="0" value="0" />
+          </div>
+          <button class="btn" type="submit">+ Dodaj produkt</button>
+          <p class="small notice">Po dodaniu możesz korygować ilości każdej wielkości w tabeli powyżej (+/−).</p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
