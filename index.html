@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Stolt Haven Moerdijk – Magazijnuitgifte</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="bar">
+  <div class="wrap row">
+    <div class="brand">
+      <img src="logo_stolt.png" alt="Stolt-Nielsen" class="logo">
+      <div class="title">
+        <strong>Stolt Haven Moerdijk</strong>
+        <span>Magazijnuitgifte – Petrochemie</span>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="admin.html">Beheer (admin)</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="notice">
+    Bestellen kan uitsluitend voor onderstaande artikelen. <b>Max. 1 stuk per artikel</b>. 
+    Voorraad en maten aktualizują się na żywo z chmury.
+  </section>
+
+  <h2>Magazijnartikelen</h2>
+  <section class="grid" id="products"></section>
+
+  <section id="cart" class="cart">
+    <h2>Winkelwagen</h2>
+    <ul id="cart-items"></ul>
+    <div class="cart-summary">Totaal artikelen: <b id="cart-count">0</b></div>
+
+    <h3>Bestelling</h3>
+    <form id="order-form" action="https://formsubmit.co/kabanekna102@gmail.com" method="POST">
+      <input type="hidden" name="_subject" value="Magazijnbestelling – Stolt Haven Moerdijk">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="producten" id="order-products">
+      <input type="hidden" name="maten" id="order-sizes">
+      <input type="hidden" name="totaal" id="order-total">
+      <div class="form-row">
+        <input type="text" name="naam" placeholder="Naam (verplicht)" required>
+        <button type="submit" id="submit-order" disabled>Bestelling versturen</button>
+        <button type="button" id="reset-cart" class="secondary">Winkelwagen resetten</button>
+      </div>
+      <p class="small">Mail trafia do: kabanekna102@gmail.com</p>
+    </form>
+  </section>
+</main>
+
+<footer class="foot"><div class="wrap">© <span id="year"></span> Stolt Haven Moerdijk – interne toepassing</div></footer>
+
+<!-- Firebase SDK (CDN) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+<!-- Konfiguracja (uzupełnij plik) -->
+<script src="firebase_config.js"></script>
+<script src="script_firebase.js"></script>
+</body>
+</html>

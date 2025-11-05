@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Beheer – Stolt Magazijn (Firebase)</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .admin-wrap{max-width:900px}
+    .admin-card{border:1px solid var(--line);border-radius:10px;padding:10px;margin:8px 0}
+    .admin-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
+    .rowx{display:flex;justify-content:space-between;align-items:center;gap:8px}
+    .rowx .controls{display:flex;gap:6px}
+    .controls button{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:#fff;cursor:pointer}
+    .badge{font-size:12px;color:#555}
+    .auth{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+    input[type=email], input[type=password]{padding:8px;border:1px solid var(--line);border-radius:8px}
+  </style>
+</head>
+<body>
+<header class="bar">
+  <div class="wrap row">
+    <div class="brand">
+      <img src="logo_stolt.png" class="logo" alt="Stolt">
+      <div class="title">
+        <strong>Beheer</strong>
+        <span>Magazijn – Stolt Haven Moerdijk</span>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="index.html">← Medewerkerspaneel</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap admin-wrap">
+  <section class="notice">
+    Edycja globalna (wspólna dla wszystkich). Zaloguj się swoim kontem admina.
+  </section>
+
+  <div class="auth">
+    <input id="email" type="email" placeholder="Admin e‑mail">
+    <input id="pass" type="password" placeholder="Hasło">
+    <button id="loginBtn">Zaloguj</button>
+    <button id="logoutBtn" style="display:none;">Wyloguj</button>
+    <span id="authState" class="badge"></span>
+  </div>
+
+  <section id="adminPanel" style="display:none;">
+    <h2>Magazijn – per maat</h2>
+    <div id="adminList" class="admin-grid"></div>
+  </section>
+</main>
+
+<footer class="foot"><div class="wrap">© <span id="year"></span> Stolt Haven Moerdijk – beheer</div></footer>
+
+<!-- Firebase SDK (CDN) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+<!-- Konfiguracja (uzupełnij plik) -->
+<script src="firebase_config.js"></script>
+<script src="admin_firebase.js"></script>
+</body>
+</html>
