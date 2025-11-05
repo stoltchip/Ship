@@ -1,8 +1,9 @@
 const $ = s => document.querySelector(s);
 const $$ = s => document.querySelectorAll(s);
 
-const CART_KEY = 'stolt_cart_v3';
-const ORDERED_KEY = 'stolt_ordered_once_v3';
+const CART_KEY = 'stolt_cart_v_sizes_v1';
+const ORDERED_KEY = 'stolt_ordered_once_v_sizes_v1';
+const OVERRIDES_KEY = 'stolt_inventory_overrides_v1';
 
 function load(key, fallback){ try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback)); } catch(e){ return fallback; } }
 function save(key, value){ localStorage.setItem(key, JSON.stringify(value)); }
@@ -12,6 +13,32 @@ function saveCart(items){ save(CART_KEY, items); }
 
 function isOrdered(id){ return new Set(load(ORDERED_KEY, [])).has(id); }
 function addOrdered(ids){ const s = new Set(load(ORDERED_KEY, [])); ids.forEach(i=>s.add(i)); save(ORDERED_KEY, [...s]); }
+
+function getSizeMap(card){
+  const base = JSON.parse(card.getAttribute('data-sizes') || '{}');
+  const overrides = load(OVERRIDES_KEY, {});
+  if(overrides[card.dataset.id]){
+    return {...base, ...overrides[card.dataset.id]};
+  }
+  return base;
+}
+function totalFromMap(map){ return Object.values(map).reduce((a,b)=>a+(+b||0),0); }
+
+function renderCardSizes(card){
+  const select = card.querySelector('select.size');
+  const countEl = card.querySelector('.stock-count');
+  const map = getSizeMap(card);
+  const entries = Object.entries(map);
+  select.innerHTML = '<option value="">Kies maat</option>';
+  entries.forEach(([size, qty]) => {
+    const opt = document.createElement('option');
+    opt.value = size;
+    opt.textContent = qty > 0 ? `${size} (${qty})` : `${size} (0)`;
+    if(qty <= 0){ opt.disabled = true; }
+    select.appendChild(opt);
+  });
+  countEl.textContent = String(totalFromMap(map));
+}
 
 function renderCart(){
   const items = loadCart();
@@ -34,11 +61,9 @@ function removeItem(id){
   saveCart(loadCart().filter(i=>i.id!==id));
   const card = document.querySelector(`.card[data-id="${id}"]`);
   if(card){
-    const base = Number(card.getAttribute('data-stock'));
-    const countEl = card.querySelector('.stock-count');
-    countEl.textContent = String(Number(countEl.textContent)+1);
+    renderCardSizes(card);
     const btn = card.querySelector('.add');
-    btn.textContent = 'Bestellen'; btn.disabled = false;
+    if(!isOrdered(id)){ btn.textContent = 'Bestellen'; btn.disabled = false; }
   }
   renderCart();
 }
@@ -48,10 +73,10 @@ function initProducts(){
     const id = card.dataset.id;
     const btn = card.querySelector('.add');
     const select = card.querySelector('select.size');
-    const countEl = card.querySelector('.stock-count');
-    countEl.textContent = card.getAttribute('data-stock') || '0';
 
-    if(isOrdered(id) || Number(countEl.textContent) <= 0){
+    renderCardSizes(card);
+
+    if(isOrdered(id) || totalFromMap(getSizeMap(card)) <= 0){
       btn.textContent = isOrdered(id) ? 'Besteld ✓' : 'Niet beschikbaar';
       btn.disabled = true;
     }
@@ -59,14 +84,21 @@ function initProducts(){
     btn.addEventListener('click', () => {
       const size = select.value;
       if(!size){ alert('Kies eerst een maat.'); return; }
-      const stock = Number(countEl.textContent);
-      if(stock <= 0 || isOrdered(id)) return;
+      if(isOrdered(id)) return;
+
+      const map = getSizeMap(card);
+      if((map[size]||0) <= 0) { alert('Deze maat is niet beschikbaar.'); return; }
 
       const items = loadCart();
-      if(items.find(i=>i.id===id)) return; // 1 sztuka
+      if(items.find(i=>i.id===id)) return;
       items.push({ id, name: card.dataset.name, size });
       saveCart(items);
-      countEl.textContent = String(stock - 1);
+
+      const overrides = load(OVERRIDES_KEY, {});
+      overrides[id] = {...map, [size]: (map[size]-1)};
+      save(OVERRIDES_KEY, overrides);
+
+      renderCardSizes(card);
       btn.textContent = 'Besteld ✓'; btn.disabled = true;
       renderCart();
     });
@@ -78,11 +110,11 @@ function initForm(){
     if(confirm('Winkelwagen resetten?')){
       saveCart([]); renderCart();
       $$('.card').forEach(card => {
-        const base = Number(card.getAttribute('data-stock'));
-        card.querySelector('.stock-count').textContent = String(base);
-        const btn = card.querySelector('.add');
-        btn.textContent = isOrdered(card.dataset.id) ? 'Besteld ✓' : 'Bestellen';
-        btn.disabled = isOrdered(card.dataset.id);
+        if(!isOrdered(card.dataset.id)){
+          const btn = card.querySelector('.add');
+          btn.textContent = 'Bestellen'; btn.disabled = false;
+        }
+        renderCardSizes(card);
       });
     }
   });

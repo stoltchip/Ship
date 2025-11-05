@@ -4,7 +4,6 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Stolt Haven Moerdijk – Magazijnuitgifte</title>
-  <meta name="description" content="Interne magazijnuitgifte (petrochemie). Bestellen: 1 stuk per artikel, alleen wat op de lijst staat.">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -17,119 +16,86 @@
         <span>Magazijnuitgifte – Petrochemie</span>
       </div>
     </div>
+    <nav class="nav">
+      <a href="admin.html" class="admin-link">Beheer (admin)</a>
+    </nav>
   </div>
 </header>
 
 <main class="wrap">
-  <section class="notice">Bestellen kan uitsluitend voor onderstaande artikelen. <b>Max. 1 stuk per artikel</b>. Voorraad is zichtbaar bij elk product.</section>
+  <section class="notice">Bestellen kan uitsluitend voor onderstaande artikelen. <b>Max. 1 stuk per artikel</b>. Kies altijd een maat; aantallen per maat zijn zichtbaar.</section>
 
   <h2>Magazijnartikelen</h2>
   <section class="grid" id="products">
 
-    <!-- Bodywarmer -->
-    <article class="card" data-id="bodywarmer" data-name="Bodywarmer" data-stock="12" data-type="kleding">
+    <article class="card" data-id="bodywarmer" data-name="Bodywarmer"
+      data-sizes='{"S":2,"M":3,"L":4,"XL":2,"XXL":1}'>
       <img src="bodywarmer_hivis.webp" alt="Bodywarmer">
       <h3>Bodywarmer</h3>
       <p>Warme bodywarmer met reflecterende strepen, ideaal voor buitenwerk.</p>
       <div class="meta">
-        <span class="stock">Voorraad: <b class="stock-count">12</b> stuks</span>
-        <label class="maat">
-          <span>Maat</span>
-          <select class="size">
-            <option value="">Kies maat</option>
-            <option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option>
-          </select>
-        </label>
+        <span class="stock">Voorraad: <b class="stock-count">—</b> stuks</span>
+        <label class="maat"><span>Maat</span><select class="size"></select></label>
       </div>
       <button class="add">Bestellen</button>
     </article>
 
-    <!-- Werkjas -->
-    <article class="card" data-id="werkjas" data-name="Werkjas" data-stock="10" data-type="kleding">
+    <article class="card" data-id="werkjas" data-name="Werkjas"
+      data-sizes='{"S":2,"M":2,"L":3,"XL":2,"XXL":1}'>
       <img src="werkjas_hivis.webp" alt="Werkjas">
       <h3>Werkjas</h3>
       <p>Beschermende werkjas met reflectie, wind- en waterdicht.</p>
       <div class="meta">
-        <span class="stock">Voorraad: <b class="stock-count">10</b> stuks</span>
-        <label class="maat">
-          <span>Maat</span>
-          <select class="size">
-            <option value="">Kies maat</option>
-            <option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option>
-          </select>
-        </label>
+        <span class="stock">Voorraad: <b class="stock-count">—</b> stuks</span>
+        <label class="maat"><span>Maat</span><select class="size"></select></label>
       </div>
       <button class="add">Bestellen</button>
     </article>
 
-    <!-- Schoenen laag -->
-    <article class="card" data-id="schoenen-laag" data-name="Veiligheidsschoenen (laag)" data-stock="8" data-type="obuwie">
+    <article class="card" data-id="schoenen-laag" data-name="Veiligheidsschoenen (laag)"
+      data-sizes='{"39":2,"40":0,"41":5,"42":1,"43":0,"44":3,"45":0,"46":1}'>
       <img src="schoenen_atlas_laag.jpg" alt="Veiligheidsschoenen (laag)">
       <h3>Veiligheidsschoenen (laag)</h3>
       <p>Lichte veiligheidsschoenen met stalen neus en antislip zool.</p>
       <div class="meta">
-        <span class="stock">Voorraad: <b class="stock-count">8</b> stuks</span>
-        <label class="maat">
-          <span>Maat</span>
-          <select class="size">
-            <option value="">Kies maat</option>
-            <option>39</option><option>40</option><option>41</option><option>42</option><option>43</option><option>44</option><option>45</option><option>46</option>
-          </select>
-        </label>
+        <span class="stock">Voorraad: <b class="stock-count">—</b> stuks</span>
+        <label class="maat"><span>Maat</span><select class="size"></select></label>
       </div>
       <button class="add">Bestellen</button>
     </article>
 
-    <!-- Laarzen hoog -->
-    <article class="card" data-id="laarzen-hoog" data-name="Veiligheidslaarzen (hoog)" data-stock="6" data-type="obuwie">
+    <article class="card" data-id="laarzen-hoog" data-name="Veiligheidslaarzen (hoog)"
+      data-sizes='{"39":1,"40":1,"41":2,"42":1,"43":0,"44":1,"45":0,"46":0}'>
       <img src="laarzen_atlas_hoog.jpg" alt="Veiligheidslaarzen (hoog)">
       <h3>Veiligheidslaarzen (hoog)</h3>
       <p>Waterdichte laarzen met stalen neus, geschikt voor petrochemische omgeving.</p>
       <div class="meta">
-        <span class="stock">Voorraad: <b class="stock-count">6</b> stuks</span>
-        <label class="maat">
-          <span>Maat</span>
-          <select class="size">
-            <option value="">Kies maat</option>
-            <option>39</option><option>40</option><option>41</option><option>42</option><option>43</option><option>44</option><option>45</option><option>46</option>
-          </select>
-        </label>
+        <span class="stock">Voorraad: <b class="stock-count">—</b> stuks</span>
+        <label class="maat"><span>Maat</span><select class="size"></select></label>
       </div>
       <button class="add">Bestellen</button>
     </article>
 
-    <!-- Chemiepak -->
-    <article class="card" data-id="chemiepak" data-name="Chemiepak (groen)" data-stock="5" data-type="chemie">
+    <article class="card" data-id="chemiepak" data-name="Chemiepak (groen)"
+      data-sizes='{"M":2,"L":2,"XL":1,"XXL":0}'>
       <img src="chemiepak_groen.jpg" alt="Chemiepak (groen)">
       <h3>Chemiepak (groen)</h3>
       <p>Volledig chemisch bestendig pak voor gebruik in risicovolle zones.</p>
       <div class="meta">
-        <span class="stock">Voorraad: <b class="stock-count">5</b> stuks</span>
-        <label class="maat">
-          <span>Maat</span>
-          <select class="size">
-            <option value="">Kies maat</option>
-            <option>M</option><option>L</option><option>XL</option><option>XXL</option>
-          </select>
-        </label>
+        <span class="stock">Voorraad: <b class="stock-count">—</b> stuks</span>
+        <label class="maat"><span>Maat</span><select class="size"></select></label>
       </div>
       <button class="add">Bestellen</button>
     </article>
 
-    <!-- Chemie laarzen -->
-    <article class="card" data-id="chemie-laarzen" data-name="Chemie laarzen" data-stock="10" data-type="chemie">
+    <article class="card" data-id="chemie-laarzen" data-name="Chemie laarzen"
+      data-sizes='{"39":1,"40":2,"41":2,"42":2,"43":1,"44":1,"45":1,"46":0}'>
       <img src="boots_dunlop.jpg" alt="Chemie laarzen">
       <h3>Chemie laarzen</h3>
       <p>Chemisch resistente laarzen met versterkte neus en zool.</p>
       <div class="meta">
-        <span class="stock">Voorraad: <b class="stock-count">10</b> stuks</span>
-        <label class="maat">
-          <span>Maat</span>
-          <select class="size">
-            <option value="">Kies maat</option>
-            <option>39</option><option>40</option><option>41</option><option>42</option><option>43</option><option>44</option><option>45</option><option>46</option>
-          </select>
-        </label>
+        <span class="stock">Voorraad: <b class="stock-count">—</b> stuks</span>
+        <label class="maat"><span>Maat</span><select class="size"></select></label>
       </div>
       <button class="add">Bestellen</button>
     </article>
