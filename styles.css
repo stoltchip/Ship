@@ -1,0 +1,9 @@
+body{font-family:Arial;background:#f2f2f2;margin:0;padding:0;}
+header{background:#d71920;color:#fff;text-align:center;padding:10px;}
+.logo{height:60px;}
+main{padding:20px;}
+.card{background:#fff;border-radius:10px;padding:15px;margin:10px;box-shadow:0 2px 5px rgba(0,0,0,0.1);}
+.card img{width:100%;border-radius:10px;}
+button{background:#d71920;color:#fff;border:none;border-radius:5px;padding:5px 10px;margin:2px;cursor:pointer;}
+button:hover{opacity:0.9;}
+#inventory .item{background:#fff;margin:10px;padding:10px;border-radius:8px;}
