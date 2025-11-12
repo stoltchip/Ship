@@ -1,16 +1,12 @@
-
-/* ----------------- CONFIG ----------------- */
-/* Vul deze 2 waarden in (README.md legt uit) */
-const SUPABASE_URL = localStorage.getItem('SUPABASE_URL') || 'https://rkuzmwmtxlwriuhumynb.supabase.co';
-const SUPABASE_ANON_KEY = localStorage.getItem('SUPABASE_ANON_KEY') || '<eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJrdXptd210eGx3cml1aHVteW5iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI5MzcwNjIsImV4cCI6MjA3ODUxMzA2Mn0.E0NJZfXSZHOpg2JYWfywjNjbu5vs46Y0_aIgIKFxEGk>';
-const EMAIL_ONTVANGER = localStorage.getItem('EMAIL_ONTVANGER') || 'magazijn@example.com'; // wordt gebruikt in mailto fallback
-
-/* Admin PIN */
+/* ========== KONFIGURACJA SUPABASE ========== */
+const SUPABASE_URL = 'https://rkuzmwmtxlwriuhumynb.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_J8jbXkHQgtHBHGzSc0IC-A_wtrvLejL';
+const EMAIL_ONTVANGER = localStorage.getItem('EMAIL_ONTVANGER') || 'magazijn@example.com';
 const ADMIN_PIN = '2468';
 
-/* Supabase client (wordt pas gebruikt na admin login of voor lezen) */
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+function getClient(){ return supabaseClient; }
+/* =========================================== */
 /* Productdefinities (ID komt overeen met 'slug' in DB) */
 const PRODUCTS = [
   {
