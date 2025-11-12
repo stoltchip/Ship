@@ -95,9 +95,20 @@ async function decrementStock(item){
 }
 
 async function insertOrder(order){
-  const { data, error } = await sb.from('orders').insert(order).select().single();
-  if(error){ console.error(error); throw error; }
+  const { data, error } = await sb
+    .from('orders')
+    .insert([order]) // ← MUSZĄ być nawiasy kwadratowe
+    .select()
+    .single();
+
+  if (error) {
+    console.error('insertOrder error:', error);
+    throw error;
+  }
+
   return data;
+}
+
 }
 
 /* ----------------- Render producten ----------------- */
