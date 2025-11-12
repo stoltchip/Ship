@@ -1,7 +1,6 @@
 /* ========== KONFIGURACJA SUPABASE (JEDYNA) ========== */
 const SUPABASE_URL = 'https://rkuzmwmtxlwriuhumynb.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_J8jbXkHQgtHBHGzSc0IC-A_wtrvLejL';
-const EMAIL_ONTVANGER = localStorage.getItem('EMAIL_ONTVANGER') || 'magazijn@example.com';
 const ADMIN_PIN = '2468';
 
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -10,48 +9,24 @@ function getClient(){ return sb; }
 /* ==================================================== */
 
 const PRODUCTS = [
-  {
-    slug:'bodywarmer-hivis',
-    name:'Bodywarmer Hi-Vis',
+  { slug:'bodywarmer-hivis', name:'Bodywarmer Hi-Vis',
     description:'Signalisatie bodywarmer, geel/marine, met reflecterende banden; ideaal voor operators.',
-    image:'img/bodywarmer_hivis.jpg',
-    sizes:['S','M','L','XL','2XL','3XL']
-  },
-  {
-    slug:'werkjas-hivis',
-    name:'Werkjas Hi-Vis',
+    image:'img/bodywarmer_hivis.jpg', sizes:['S','M','L','XL','2XL','3XL'] },
+  { slug:'werkjas-hivis', name:'Werkjas Hi-Vis',
     description:'High-visibility werkjas, duurzaam en waterafstotend, met reflectie.',
-    image:'img/werkjas_hivis.jpg',
-    sizes:['S','M','L','XL','2XL','3XL']
-  },
-  {
-    slug:'chemiepak-groen',
-    name:'Chemiepak Groen',
+    image:'img/werkjas_hivis.jpg', sizes:['S','M','L','XL','2XL','3XL'] },
+  { slug:'chemiepak-groen', name:'Chemiepak Groen',
     description:'Gas- en vloeistofdicht overall met capuchon, voor chemische werkzaamheden.',
-    image:'img/chemiepak_groen.jpg',
-    sizes:['S','M','L','XL','2XL']
-  },
-  {
-    slug:'laarzen-dunlop',
-    name:'Dunlop Laarzen (hoog)',
+    image:'img/chemiepak_groen.jpg', sizes:['S','M','L','XL','2XL'] },
+  { slug:'laarzen-dunlop', name:'Dunlop Laarzen (hoog)',
     description:'Dunlop Acifort werklaars, olie- en chemiebestendig, antislip zool.',
-    image:'img/laarzen_dunlop.jpg',
-    sizes:['39','40','41','42','43','44','45','46','47']
-  },
-  {
-    slug:'laarzen-atlas-hoog',
-    name:'Atlas Laarzen (hoog)',
+    image:'img/laarzen_dunlop.jpg', sizes:['39','40','41','42','43','44','45','46','47'] },
+  { slug:'laarzen-atlas-hoog', name:'Atlas Laarzen (hoog)',
     description:'Atlas veiligheidslaars, S3, waterafstotend leder en teenbescherming.',
-    image:'img/laarzen_atlas_hoog.jpg',
-    sizes:['39','40','41','42','43','44','45','46','47']
-  },
-  {
-    slug:'schoenen-atlas-laag',
-    name:'Atlas Schoenen (laag)',
+    image:'img/laarzen_atlas_hoog.jpg', sizes:['39','40','41','42','43','44','45','46','47'] },
+  { slug:'schoenen-atlas-laag', name:'Atlas Schoenen (laag)',
     description:'Atlas veiligheidsschoen laag model, S3, ademende voering en stalen neus.',
-    image:'img/schoenen_atlas_laag.jpg',
-    sizes:['39','40','41','42','43','44','45','46','47']
-  }
+    image:'img/schoenen_atlas_laag.jpg', sizes:['39','40','41','42','43','44','45','46','47'] },
 ];
 
 /* ----------------- UI helpers ----------------- */
@@ -70,8 +45,6 @@ $$('.tab-btn').forEach(btn=>btn.addEventListener('click',()=>{
 function toast(msg){ alert(msg); }
 
 /* ----------------- DB helpers ----------------- */
-async function ensureSchema(){ return true; }
-
 async function fetchStock(){
   const { data, error } = await sb.from('stock').select('*');
   if(error){ console.error('fetchStock error:', error); return []; }
@@ -107,7 +80,7 @@ async function insertOrder(order){
   return data;
 }
 
-/* ----------------- Render producten ----------------- */
+/* ----------------- Stan w pamięci ----------------- */
 let STOCK_CACHE = {}; // {slug: {size: qty}}
 function applyStockToCache(rows){
   STOCK_CACHE = {};
@@ -117,6 +90,7 @@ function applyStockToCache(rows){
   });
 }
 
+/* ----------------- Render produktów ----------------- */
 function sizeOptions(product){
   const sizes = product.sizes;
   const stock = STOCK_CACHE[product.slug] || {};
@@ -151,17 +125,12 @@ function renderProducts(){
           ${sizeOptions(p)}
         </select>
         <div class="actions">
-          <button class="btn add-btn" data-slug="${p.slug}">Toevoegen</button>
-          <button class="btn ghost go-cart">Naar winkelwagen</button>
+          <button class="btn primary add-btn" data-slug="${p.slug}">Toevoegen</button>
         </div>
       </div>
     `;
     grid.appendChild(el);
   });
-
-  $$('.go-cart').forEach(b=>b.addEventListener('click',()=>{
-    $$('.tab-btn').find(x=>x.dataset.tab==='winkelwagen').click();
-  }));
 
   $$('.add-btn').forEach(btn=>btn.addEventListener('click',()=>{
     const slug = btn.dataset.slug;
@@ -186,6 +155,8 @@ function removeFromCart(slug){
 }
 function renderCart(){
   const list = $('#cart-list'); list.innerHTML='';
+  const badge = $('#cart-badge'); if(badge) badge.style.opacity = CART.length ? 1 : 0;
+
   if(CART.length===0){ list.innerHTML='<p class="tiny">Je winkelwagen is leeg.</p>'; return; }
   CART.forEach(it=>{
     const p = PRODUCTS.find(x=>x.slug===it.slug);
@@ -205,7 +176,7 @@ function renderCart(){
 }
 $('#btn-clear-cart').addEventListener('click',()=>{ CART=[]; saveCart(); renderCart(); });
 
-/* ----------------- Bestellen ----------------- */
+/* ----------------- Bestellen (tylko IMIĘ + notatki) ----------------- */
 $('#order-form').addEventListener('submit', async (e) => {
   e.preventDefault();
 
@@ -214,14 +185,12 @@ $('#order-form').addEventListener('submit', async (e) => {
   const form = new FormData(e.target);
   const order = {
     name: (form.get('name') || '').trim(),
-    email: (form.get('email') || '').trim(),
-    department: (form.get('department') || '').trim() || null,
+    department: null, // nie używamy – można podmienić wg potrzeb
     notes: (form.get('notes') || '').trim() || null,
     items: CART,
   };
 
   if (!order.name)  return toast('Vul je naam in.');
-  if (!order.email) return toast('Vul je e-mail in.');
 
   const btn = $('#btn-submit-order');
   const prevText = btn.textContent;
@@ -234,15 +203,6 @@ $('#order-form').addEventListener('submit', async (e) => {
     await loadAndRender();
     CART = []; saveCart(); renderCart();
 
-    const body = encodeURIComponent(
-      `Nieuwe bestelling:\n\n${order.name} (${order.email})\nAfdeling: ${order.department || '-'}\n\nItems:\n` +
-      order.items.map(i => {
-        const p = PRODUCTS.find(x => x.slug === i.slug);
-        return `- ${p?.name || i.slug}, maat ${i.size}, x${i.qty}`;
-      }).join('\n') +
-      `\n\nOpmerkingen:\n${order.notes || '-'}`
-    );
-    window.location.href = `mailto:${EMAIL_ONTVANGER}?subject=Nieuwe PBM bestelling&body=${body}`;
     e.target.reset();
     toast('Bestelling geplaatst.');
   } catch (err) {
@@ -261,8 +221,12 @@ $('#btn-admin-login').addEventListener('click', async ()=>{
   $('#admin-locked').classList.add('hidden');
   $('#admin-area').classList.remove('hidden');
   await loadAndRender();
+  await renderOrdersTable();
 });
-$('#btn-sync').addEventListener('click', loadAndRender);
+$('#btn-sync').addEventListener('click', async ()=>{
+  await loadAndRender();
+  await renderOrdersTable();
+});
 $('#btn-seed').addEventListener('click', async ()=>{
   const rows=[];
   PRODUCTS.forEach(p=>p.sizes.forEach(s=>rows.push({slug:p.slug,size:s,quantity:10})));
@@ -289,7 +253,7 @@ function renderAdminTable(){
       <td><input class="qty-input" type="number" min="0" value="${r.qty}" data-slug="${r.slug}" data-size="${r.size}"/></td>
     </tr>`;
   });
-  html += '</tbody></table><div style="margin-top:8px"><button id="btn-save" class="btn primary">Opslaan</button></div>';
+  html += '</tbody></table><div style="margin-top:8px"><button id="btn-save" class="btn primary">Opslaan</button></div>`;
   container.innerHTML = html;
   $('#btn-save').addEventListener('click', async ()=>{
     const inputs = $$('.qty-input');
@@ -298,6 +262,40 @@ function renderAdminTable(){
     await loadAndRender();
     toast('Voorraad opgeslagen.');
   });
+}
+
+/* ---- Tabela zamówień w adminie ---- */
+async function renderOrdersTable() {
+  const box = $('#orders-table');
+  const { data, error } = await sb
+    .from('orders')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Fout bij ophalen orders:', error);
+    box.innerHTML = '<div class="notice tiny">Kon orders niet laden.</div>';
+    return;
+  }
+
+  let html = '<table class="table"><thead><tr>' +
+             '<th>Datum</th><th>Naam</th><th>Items</th><th>Notities</th>' +
+             '</tr></thead><tbody>';
+
+  data.forEach(o => {
+    const itemsList = (o.items || []).map(i =>
+      `• ${i.slug} (maat ${i.size}, x${i.qty})`
+    ).join('<br>');
+    html += `<tr>
+      <td>${new Date(o.created_at).toLocaleString()}</td>
+      <td>${o.name || '-'}</td>
+      <td>${itemsList}</td>
+      <td>${o.notes || '-'}</td>
+    </tr>`;
+  });
+
+  html += '</tbody></table>';
+  box.innerHTML = html;
 }
 
 /* ----------------- Synchronizacja + Init ----------------- */
@@ -317,6 +315,7 @@ async function loadAndRender(){
   const adminArea = document.getElementById('admin-area');
   if (adminArea && !adminArea.classList.contains('hidden')) {
     renderAdminTable();
+    renderOrdersTable();
   }
 }
 
