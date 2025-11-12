@@ -5,9 +5,10 @@ const EMAIL_ONTVANGER = localStorage.getItem('EMAIL_ONTVANGER') || 'magazijn@exa
 const ADMIN_PIN = '2468';
 
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-window.sb = sb; // ← udostępnij klienta do DevTools
+window.sb = sb; // do testów w DevTools
 function getClient(){ return sb; }
 /* ==================================================== */
+
 const PRODUCTS = [
   {
     slug:'bodywarmer-hivis',
@@ -54,7 +55,7 @@ const PRODUCTS = [
 ];
 
 /* ----------------- UI helpers ----------------- */
-const $ = (q,root=document)=>root.querySelector(q);
+const $  = (q,root=document)=>root.querySelector(q);
 const $$ = (q,root=document)=>Array.from(root.querySelectorAll(q));
 $('#year').textContent = new Date().getFullYear();
 
@@ -66,39 +67,36 @@ $$('.tab-btn').forEach(btn=>btn.addEventListener('click',()=>{
   $('#'+btn.dataset.tab).classList.add('active');
 }));
 
-function toast(msg){
-  alert(msg);
-}
+function toast(msg){ alert(msg); }
 
 /* ----------------- DB helpers ----------------- */
-async function ensureSchema(){
-  // tries to create tables if not exist using RPC via SQL not possible here; provide seed button for stock entries.
-  return true;
-}
+async function ensureSchema(){ return true; }
 
 async function fetchStock(){
   const { data, error } = await sb.from('stock').select('*');
-  if(error){ console.error(error); return []; }
+  if(error){ console.error('fetchStock error:', error); return []; }
   return data;
 }
 
 async function upsertStock(rows){
   const { data, error } = await sb.from('stock').upsert(rows).select();
-  if(error){ console.error(error); toast('Fout bij opslaan voorraad.'); }
-  return data;
+  if(error){ console.error('upsertStock error:', error); toast('Fout bij opslaan voorraad.'); }
+  return data || [];
 }
 
 async function decrementStock(item){
-  // item = {slug, size, qty:1}
-  const { data, error } = await sb.rpc('decrement_stock', { p_slug:item.slug, p_size:item.size, p_qty:item.qty });
-  if(error){ console.error(error); throw error; }
+  // item = {slug, size, qty}
+  const { data, error } = await sb.rpc('decrement_stock', {
+    p_slug:item.slug, p_size:item.size, p_qty:item.qty
+  });
+  if(error){ console.error('decrementStock error:', error); throw error; }
   return data;
 }
 
 async function insertOrder(order){
   const { data, error } = await sb
     .from('orders')
-    .insert([order]) // ← MUSZĄ być nawiasy kwadratowe
+    .insert([order]) // MUSI być tablica
     .select()
     .single();
 
@@ -106,10 +104,7 @@ async function insertOrder(order){
     console.error('insertOrder error:', error);
     throw error;
   }
-
   return data;
-}
-
 }
 
 /* ----------------- Render producten ----------------- */
@@ -128,8 +123,8 @@ function sizeOptions(product){
   return ['<option value="">Kies maat…</option>'].concat(
     sizes.map(s=>{
       const hasEntry = Object.prototype.hasOwnProperty.call(stock, s);
-      const qty = hasEntry ? stock[s] : null; // null = stan nieznany (jeszcze nie pobrano)
-      const disabled = (qty === 0) ? 'disabled' : ''; // blokuj tylko, gdy mamy pewne 0
+      const qty = hasEntry ? stock[s] : null; // null = jeszcze nie pobrano
+      const disabled = (qty === 0) ? 'disabled' : '';
       const label = (qty === 0)
         ? `${s} — niet op voorraad`
         : (qty > 0)
@@ -139,7 +134,6 @@ function sizeOptions(product){
     })
   ).join('');
 }
-
 
 function renderProducts(){
   const grid = $('#product-grid');
@@ -171,10 +165,9 @@ function renderProducts(){
 
   $$('.add-btn').forEach(btn=>btn.addEventListener('click',()=>{
     const slug = btn.dataset.slug;
-    const product = PRODUCTS.find(x=>x.slug===slug);
     const select = btn.closest('.card').querySelector('.size-select');
     const size = select.value;
-    if(!size){ toast('Kies eerst een maat.'); return; }
+    if(!size){ return toast('Kies eerst een maat.'); }
     addToCart({slug, size, qty:1});
   }));
 }
@@ -184,16 +177,13 @@ let CART = []; // [{slug,size,qty}]
 function saveCart(){ localStorage.setItem('CART', JSON.stringify(CART)); }
 function loadCart(){ try{ CART = JSON.parse(localStorage.getItem('CART')||'[]'); }catch{ CART=[]; } }
 function addToCart(item){
-  // slechts één per product: vervang bestaande
   const idx = CART.findIndex(i=>i.slug===item.slug);
   if(idx>-1){ CART[idx]=item; } else { CART.push(item); }
   saveCart(); renderCart(); toast('Toegevoegd aan winkelwagen.');
 }
-
 function removeFromCart(slug){
   CART = CART.filter(i=>i.slug!==slug); saveCart(); renderCart();
 }
-
 function renderCart(){
   const list = $('#cart-list'); list.innerHTML='';
   if(CART.length===0){ list.innerHTML='<p class="tiny">Je winkelwagen is leeg.</p>'; return; }
@@ -219,9 +209,7 @@ $('#btn-clear-cart').addEventListener('click',()=>{ CART=[]; saveCart(); renderC
 $('#order-form').addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  if (CART.length === 0) {
-    return toast('Winkelwagen is leeg.');
-  }
+  if (CART.length === 0) return toast('Winkelwagen is leeg.');
 
   const form = new FormData(e.target);
   const order = {
@@ -232,32 +220,20 @@ $('#order-form').addEventListener('submit', async (e) => {
     items: CART,
   };
 
-  // prosta walidacja
-  if (!order.name) return toast('Vul je naam in.');
+  if (!order.name)  return toast('Vul je naam in.');
   if (!order.email) return toast('Vul je e-mail in.');
 
-  // zablokuj przycisk na czas wysyłki
   const btn = $('#btn-submit-order');
   const prevText = btn.textContent;
   btn.disabled = true;
   btn.textContent = 'Versturen…';
 
   try {
-    // 1) zamówienie w DB
     await insertOrder({ ...order });
-
-    // 2) zmniejsz stany (kolejno, by uniknąć konfliktów)
-    for (const it of CART) {
-      await decrementStock({ ...it }); // { slug, size, qty: 1 }
-    }
-
-    // 3) odśwież dane i UI
+    for (const it of CART) { await decrementStock({ ...it }); }
     await loadAndRender();
-    CART = [];
-    saveCart();
-    renderCart();
+    CART = []; saveCart(); renderCart();
 
-    // 4) mailto fallback
     const body = encodeURIComponent(
       `Nieuwe bestelling:\n\n${order.name} (${order.email})\nAfdeling: ${order.department || '-'}\n\nItems:\n` +
       order.items.map(i => {
@@ -267,20 +243,16 @@ $('#order-form').addEventListener('submit', async (e) => {
       `\n\nOpmerkingen:\n${order.notes || '-'}`
     );
     window.location.href = `mailto:${EMAIL_ONTVANGER}?subject=Nieuwe PBM bestelling&body=${body}`;
-
-    // 5) wyczyść formularz
     e.target.reset();
     toast('Bestelling geplaatst.');
   } catch (err) {
     console.error('Bestelling fout:', err);
-    const msg = err?.message || 'Onbekende fout.';
-    toast('Plaatsen mislukt. Controleer verbinding met Supabase. (' + msg + ')');
+    toast('Plaatsen mislukt. Controleer verbinding met Supabase. (' + (err?.message||'') + ')');
   } finally {
     btn.disabled = false;
     btn.textContent = prevText;
   }
 });
-
 
 /* ----------------- Admin ----------------- */
 $('#btn-admin-login').addEventListener('click', async ()=>{
@@ -290,11 +262,8 @@ $('#btn-admin-login').addEventListener('click', async ()=>{
   $('#admin-area').classList.remove('hidden');
   await loadAndRender();
 });
-
 $('#btn-sync').addEventListener('click', loadAndRender);
-
 $('#btn-seed').addEventListener('click', async ()=>{
-  // vul stock voor alle maten met 10 (indien niet aanwezig)
   const rows=[];
   PRODUCTS.forEach(p=>p.sizes.forEach(s=>rows.push({slug:p.slug,size:s,quantity:10})));
   await upsertStock(rows);
@@ -331,47 +300,36 @@ function renderAdminTable(){
   });
 }
 
-// === PODMIANA CAŁEJ FUNKCJI loadAndRender ===
+/* ----------------- Synchronizacja + Init ----------------- */
 async function loadAndRender(){
   const client = getClient();
   if(!client){
-    console.warn('Supabase niezaładowany jeszcze. UI działa, ale dane nie zostaną pobrane.');
+    console.warn('Supabase niezaładowany. Render bez danych.');
     renderProducts();
     renderCart();
     return;
   }
   const stock = await fetchStock();
   applyStockToCache(stock);
-
-  // odśwież karty produktów + koszyk
   renderProducts();
   renderCart();
 
-  // KLUCZOWE: jeśli panel admina jest widoczny, zbuduj tabelę edycji stanów
   const adminArea = document.getElementById('admin-area');
   if (adminArea && !adminArea.classList.contains('hidden')) {
     renderAdminTable();
   }
 }
 
-/* Init */
-loadCart();
-loadAndRender();
-// === INICJALIZACJA STRONY ===
-window.addEventListener('DOMContentLoaded', () => {
-  loadCart();
-  loadAndRender();
-});
-// === INICJALIZACJA STRONY (pewne renderowanie kart) ===
+// Jedna, pewna inicjalizacja
 window.addEventListener('DOMContentLoaded', () => {
   try {
     loadCart();
-    // najpierw pokaż produkty off-line (bez Supabase), żeby UI nie było puste
+    // najpierw pokaż UI offline
     renderProducts();
     renderCart();
   } catch (e) {
     console.error('Init UI error:', e);
   }
-  // a potem dociągnij stany z Supabase i odśwież
+  // potem dociągnij stany z Supabase
   loadAndRender();
 });
