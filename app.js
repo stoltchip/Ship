@@ -176,7 +176,7 @@ function renderCart(){
 }
 $('#btn-clear-cart').addEventListener('click',()=>{ CART=[]; saveCart(); renderCart(); });
 
-/* ----------------- Bestellen (tylko IMIĘ + notatki) ----------------- */
+/* ----------------- Bestellen ----------------- */
 $('#order-form').addEventListener('submit', async (e) => {
   e.preventDefault();
 
@@ -185,12 +185,11 @@ $('#order-form').addEventListener('submit', async (e) => {
   const form = new FormData(e.target);
   const order = {
     name: (form.get('name') || '').trim(),
-    department: null, // nie używamy – można podmienić wg potrzeb
     notes: (form.get('notes') || '').trim() || null,
     items: CART,
   };
 
-  if (!order.name)  return toast('Vul je naam in.');
+  if (!order.name) return toast('Vul je naam in.');
 
   const btn = $('#btn-submit-order');
   const prevText = btn.textContent;
@@ -201,8 +200,9 @@ $('#order-form').addEventListener('submit', async (e) => {
     await insertOrder({ ...order });
     for (const it of CART) { await decrementStock({ ...it }); }
     await loadAndRender();
-    CART = []; saveCart(); renderCart();
-
+    CART = [];
+    saveCart();
+    renderCart();
     e.target.reset();
     toast('Bestelling geplaatst.');
   } catch (err) {
