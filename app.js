@@ -120,13 +120,19 @@ function sizeOptions(product){
   const stock = STOCK_CACHE[product.slug] || {};
   return ['<option value="">Kies maat…</option>'].concat(
     sizes.map(s=>{
-      const qty = stock[s] ?? 0;
-      const disabled = qty<=0 ? 'disabled' : '';
-      const label = qty>0 ? `${s} — ${qty} op voorraad` : `${s} — niet op voorraad`;
+      const hasEntry = Object.prototype.hasOwnProperty.call(stock, s);
+      const qty = hasEntry ? stock[s] : null; // null = stan nieznany (jeszcze nie pobrano)
+      const disabled = (qty === 0) ? 'disabled' : ''; // blokuj tylko, gdy mamy pewne 0
+      const label = (qty === 0)
+        ? `${s} — niet op voorraad`
+        : (qty > 0)
+          ? `${s} — ${qty} op voorraad`
+          : `${s} — voorraad onbekend`;
       return `<option ${disabled} value="${s}">${label}</option>`;
     })
   ).join('');
 }
+
 
 function renderProducts(){
   const grid = $('#product-grid');
