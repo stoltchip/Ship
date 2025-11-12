@@ -5,6 +5,7 @@ const EMAIL_ONTVANGER = localStorage.getItem('EMAIL_ONTVANGER') || 'magazijn@exa
 const ADMIN_PIN = '2468';
 
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+window.sb = sb; // ← udostępnij klienta do DevTools
 function getClient(){ return sb; }
 /* ==================================================== */
 const PRODUCTS = [
@@ -215,36 +216,71 @@ function renderCart(){
 $('#btn-clear-cart').addEventListener('click',()=>{ CART=[]; saveCart(); renderCart(); });
 
 /* ----------------- Bestellen ----------------- */
-$('#order-form').addEventListener('submit', async (e)=>{
+$('#order-form').addEventListener('submit', async (e) => {
   e.preventDefault();
-  if(CART.length===0){ return toast('Winkelwagen is leeg.'); }
+
+  if (CART.length === 0) {
+    return toast('Winkelwagen is leeg.');
+  }
+
   const form = new FormData(e.target);
   const order = {
-    name: form.get('name'),
-    email: form.get('email'),
-    department: form.get('department')||null,
-    notes: form.get('notes')||null,
+    name: (form.get('name') || '').trim(),
+    email: (form.get('email') || '').trim(),
+    department: (form.get('department') || '').trim() || null,
+    notes: (form.get('notes') || '').trim() || null,
     items: CART,
   };
-  try{
-    // 1) Maak bestelling in DB
+
+  // prosta walidacja
+  if (!order.name) return toast('Vul je naam in.');
+  if (!order.email) return toast('Vul je e-mail in.');
+
+  // zablokuj przycisk na czas wysyłki
+  const btn = $('#btn-submit-order');
+  const prevText = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Versturen…';
+
+  try {
+    // 1) zamówienie w DB
     await insertOrder({ ...order });
-    // 2) Verlaag voorraad per item
-    for(const it of CART){ await decrementStock({ ...it }); }
-    // 3) Sync en UI
+
+    // 2) zmniejsz stany (kolejno, by uniknąć konfliktów)
+    for (const it of CART) {
+      await decrementStock({ ...it }); // { slug, size, qty: 1 }
+    }
+
+    // 3) odśwież dane i UI
     await loadAndRender();
-    CART=[]; saveCart(); renderCart();
-    // 4) Mailto fallback voor notificatie
-    const body = encodeURIComponent(`Nieuwe bestelling:\n\n${order.name} (${order.email})\nAfdeling: ${order.department||'-'}\n\nItems:\n${order.items.map(i=>{
-      const p = PRODUCTS.find(x=>x.slug===i.slug); return `- ${p.name}, maat ${i.size}, x${i.qty}`
-    }).join('\n')}\n\nOpmerkingen:\n${order.notes||'-'}`);
+    CART = [];
+    saveCart();
+    renderCart();
+
+    // 4) mailto fallback
+    const body = encodeURIComponent(
+      `Nieuwe bestelling:\n\n${order.name} (${order.email})\nAfdeling: ${order.department || '-'}\n\nItems:\n` +
+      order.items.map(i => {
+        const p = PRODUCTS.find(x => x.slug === i.slug);
+        return `- ${p?.name || i.slug}, maat ${i.size}, x${i.qty}`;
+      }).join('\n') +
+      `\n\nOpmerkingen:\n${order.notes || '-'}`
+    );
     window.location.href = `mailto:${EMAIL_ONTVANGER}?subject=Nieuwe PBM bestelling&body=${body}`;
+
+    // 5) wyczyść formularz
+    e.target.reset();
     toast('Bestelling geplaatst.');
-  }catch(err){
-    console.error(err);
-    toast('Plaatsen mislukt. Controleer verbinding met Supabase.');
+  } catch (err) {
+    console.error('Bestelling fout:', err);
+    const msg = err?.message || 'Onbekende fout.';
+    toast('Plaatsen mislukt. Controleer verbinding met Supabase. (' + msg + ')');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = prevText;
   }
 });
+
 
 /* ----------------- Admin ----------------- */
 $('#btn-admin-login').addEventListener('click', async ()=>{
@@ -321,3 +357,8 @@ async function loadAndRender(){
 /* Init */
 loadCart();
 loadAndRender();
+// === INICJALIZACJA STRONY ===
+window.addEventListener('DOMContentLoaded', () => {
+  loadCart();
+  loadAndRender();
+});
