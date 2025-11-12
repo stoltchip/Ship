@@ -3,29 +3,30 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Stolt-Nielsen | Werkkleding & Schoeisel</title>
-  <link rel="stylesheet" href="styles.css" />
+  <title>Stolt-Nielsen | Magazijn Werkkleding</title>
   <link rel="icon" href="img/logo_stolt.png" />
-
-<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script defer src="app.js"></script>
+  <link rel="stylesheet" href="styles.css" />
+  <!-- Supabase -->
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script defer src="app.js"></script>
 </head>
-
 <body>
   <header class="site-header">
     <div class="brand">
       <img src="img/logo_stolt.png" alt="Stolt-Nielsen" />
       <h1>Stolt-Nielsen — Magazijn Werkkleding</h1>
     </div>
-    <nav>
+    <nav class="tabs">
       <button class="tab-btn active" data-tab="werknemer">Werknemer</button>
-      <button class="tab-btn" data-tab="winkelwagen">Winkelwagen</button>
+      <button class="tab-btn" data-tab="winkelwagen">
+        Winkelwagen <span id="cart-badge" class="badge-dot"></span>
+      </button>
       <button class="tab-btn" data-tab="beheerder">Beheerder</button>
     </nav>
   </header>
 
   <main>
-    <!-- Zakładka: Werknemer -->
+    <!-- Werknemer -->
     <section id="werknemer" class="tab active">
       <div class="hero">
         <h2>Bestel je PBM eenvoudig en snel</h2>
@@ -34,23 +35,16 @@
       <div id="product-grid" class="grid"></div>
     </section>
 
-    <!-- Zakładka: Winkelwagen -->
+    <!-- Winkelwagen -->
     <section id="winkelwagen" class="tab">
       <h2>Winkelwagen</h2>
       <div id="cart-list" class="cart-list"></div>
 
       <form id="order-form" class="order-form">
         <h3>Gegevens voor bestelling</h3>
-
         <div class="row">
           <label>Naam*<input required name="name" placeholder="Voor- en achternaam" /></label>
-          <label>E-mail*<input required type="email" name="email" placeholder="jij@bedrijf.com" /></label>
         </div>
-
-        <div class="row">
-          <label>Afdeling<input name="department" placeholder="Bijv. Operations" /></label>
-        </div>
-
         <label>Opmerkingen
           <textarea name="notes" rows="3" placeholder="Optioneel"></textarea>
         </label>
@@ -59,12 +53,11 @@
           <button type="button" class="btn ghost" id="btn-clear-cart">Winkelwagen legen</button>
           <button type="submit" class="btn primary" id="btn-submit-order">Bestelling plaatsen</button>
         </div>
-
-        <p class="hint">Na het plaatsen wordt de voorraad op Supabase automatisch verlaagd.</p>
+        <p class="hint">Na het plaatsen wordt de voorraad automatisch verlaagd. E-mail is niet nodig.</p>
       </form>
     </section>
 
-    <!-- Zakładka: Beheerder -->
+    <!-- Beheerder -->
     <section id="beheerder" class="tab">
       <h2>Beheerder</h2>
 
@@ -77,11 +70,15 @@
 
       <div id="admin-area" class="admin-area hidden">
         <div class="admin-actions">
-          <button id="btn-sync" class="btn">Synchroniseer vanuit Supabase</button>
+          <button id="btn-sync" class="btn">Synchroniseer</button>
           <button id="btn-seed" class="btn ghost">Initieer demo-data</button>
         </div>
 
+        <h3>Voorraadbeheer</h3>
         <div id="admin-table" class="admin-table"></div>
+
+        <h3 style="margin-top:24px">Overzicht bestellingen</h3>
+        <div id="orders-table" class="admin-table"></div>
       </div>
     </section>
   </main>
