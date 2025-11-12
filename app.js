@@ -289,12 +289,27 @@ function renderAdminTable(){
   });
 }
 
-/* ----------------- Load & render ----------------- */
+// === PODMIANA CAŁEJ FUNKCJI loadAndRender ===
 async function loadAndRender(){
+  const client = getClient();
+  if(!client){
+    console.warn('Supabase niezaładowany jeszcze. UI działa, ale dane nie zostaną pobrane.');
+    renderProducts();
+    renderCart();
+    return;
+  }
   const stock = await fetchStock();
   applyStockToCache(stock);
+
+  // odśwież karty produktów + koszyk
   renderProducts();
   renderCart();
+
+  // KLUCZOWE: jeśli panel admina jest widoczny, zbuduj tabelę edycji stanów
+  const adminArea = document.getElementById('admin-area');
+  if (adminArea && !adminArea.classList.contains('hidden')) {
+    renderAdminTable();
+  }
 }
 
 /* Init */
