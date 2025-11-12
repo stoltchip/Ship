@@ -10,7 +10,7 @@ const DEFAULT_CATALOG = [
     id: "bodywarmer",
     naam: "Bodywarmer",
     omschrijving: "Warme bodywarmer met reflecterende strepen, ideaal voor buitenwerk in koel weer.",
-img: "img/bodywarmer_hivis.webp",
+img: "img/bodywarmer_hivis.jpg",
 ",
     sizes: [
       {label:"S", stock:2},
@@ -24,7 +24,7 @@ img: "img/bodywarmer_hivis.webp",
     id: "werkjas",
     naam: "Werkjas",
     omschrijving: "Beschermende werkjas met reflectie, wind- en waterdicht.",
-img: "img/werkjas_hivis.webp",
+img: "img/werkjas_hivis.jpg",
     sizes: [
       {label:"S", stock:2},
       {label:"M", stock:2},
