@@ -6,14 +6,18 @@
   <title>Stolt-Nielsen | Werkkleding & Schoeisel</title>
   <link rel="stylesheet" href="styles.css" />
   <link rel="icon" href="img/logo_stolt.png" />
-  <!-- Supabase -->
-  <script src="https://unpkg.com/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+
+  <!-- Supabase (z poprawką: defer, stabilny CDN) -->
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <!-- Główny skrypt strony -->
+  <script defer src="app.js"></script>
 </head>
+
 <body>
   <header class="site-header">
     <div class="brand">
       <img src="img/logo_stolt.png" alt="Stolt-Nielsen" />
-      <h1>Stolt‑Nielsen — Magazijn Werkkleding</h1>
+      <h1>Stolt-Nielsen — Magazijn Werkkleding</h1>
     </div>
     <nav>
       <button class="tab-btn active" data-tab="werknemer">Werknemer</button>
@@ -23,29 +27,32 @@
   </header>
 
   <main>
-    <!-- Werknemer -->
+    <!-- Zakładka: Werknemer -->
     <section id="werknemer" class="tab active">
       <div class="hero">
         <h2>Bestel je PBM eenvoudig en snel</h2>
         <p>Kies het product, selecteer maat en voeg precies <strong>één</strong> stuk per product toe aan je winkelwagen.</p>
       </div>
-
       <div id="product-grid" class="grid"></div>
     </section>
 
-    <!-- Winkelwagen -->
+    <!-- Zakładka: Winkelwagen -->
     <section id="winkelwagen" class="tab">
       <h2>Winkelwagen</h2>
       <div id="cart-list" class="cart-list"></div>
+
       <form id="order-form" class="order-form">
         <h3>Gegevens voor bestelling</h3>
+
         <div class="row">
           <label>Naam*<input required name="name" placeholder="Voor- en achternaam" /></label>
-          <label>E‑mail*<input required type="email" name="email" placeholder="jij@bedrijf.com" /></label>
+          <label>E-mail*<input required type="email" name="email" placeholder="jij@bedrijf.com" /></label>
         </div>
+
         <div class="row">
           <label>Afdeling<input name="department" placeholder="Bijv. Operations" /></label>
         </div>
+
         <label>Opmerkingen
           <textarea name="notes" rows="3" placeholder="Optioneel"></textarea>
         </label>
@@ -54,11 +61,12 @@
           <button type="button" class="btn ghost" id="btn-clear-cart">Winkelwagen legen</button>
           <button type="submit" class="btn primary" id="btn-submit-order">Bestelling plaatsen</button>
         </div>
+
         <p class="hint">Na het plaatsen wordt de voorraad op Supabase automatisch verlaagd.</p>
       </form>
     </section>
 
-    <!-- Beheerder -->
+    <!-- Zakładka: Beheerder -->
     <section id="beheerder" class="tab">
       <h2>Beheerder</h2>
 
@@ -74,15 +82,14 @@
           <button id="btn-sync" class="btn">Synchroniseer vanuit Supabase</button>
           <button id="btn-seed" class="btn ghost">Initieer demo-data</button>
         </div>
+
         <div id="admin-table" class="admin-table"></div>
       </div>
     </section>
   </main>
 
   <footer class="site-footer">
-    <p>© <span id="year"></span> Stolt‑Nielsen. Interne tool voor PBM. Thema wit + oranje.</p>
+    <p>© <span id="year"></span> Stolt-Nielsen. Interne tool voor PBM. Thema wit + oranje.</p>
   </footer>
-
-  <script src="app.js"></script>
 </body>
 </html>
