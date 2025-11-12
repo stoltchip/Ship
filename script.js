@@ -10,7 +10,8 @@ const DEFAULT_CATALOG = [
     id: "bodywarmer",
     naam: "Bodywarmer",
     omschrijving: "Warme bodywarmer met reflecterende strepen, ideaal voor buitenwerk in koel weer.",
-img: "img/bodywarmer_hivis.webp"",
+img: "img/bodywarmer_hivis.webp",
+",
     sizes: [
       {label:"S", stock:2},
       {label:"M", stock:3},
