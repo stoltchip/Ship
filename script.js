@@ -1,4 +1,3 @@
-
 // === Config ===
 const MAIL_TO = "kabanekna102@gmail.com"; // hidden in UI
 const FORM_ENDPOINT = ""; // optional serverless endpoint
@@ -247,3 +246,49 @@ tabEmp.addEventListener('click', ()=>activate('emp'));
 tabAdm.addEventListener('click', ()=>activate('adm'));
 activate('emp'); // default
 renderEmployee();
+
+
+// =====================================================
+// === FILES GRID (pliki z katalogu głównego repo)  ===
+// =====================================================
+
+// Lista plików widocznych na dole strony (div#files-grid)
+const FILES = [
+  { file: "bodywarmer_hivis.webp",   title: "Bodywarmer Hi-Vis" },
+  { file: "boots_dunlop.jpg",        title: "Buty Dunlop" },
+  { file: "chemiepak_groen.jpg",     title: "Chemiepak (zielony)" },
+  { file: "laarzen_atlas_hoog.jpg",  title: "Wysokie buty Atlas" },
+  { file: "logo_stolt.png",          title: "Logo Stolt" },
+  { file: "schoenen_atlas_laag.jpg", title: "Niskie buty Atlas" },
+  { file: "werkjas_hivis.webp",      title: "Kurtka robocza Hi-Vis" }
+];
+
+// rozszerzenia do podglądu jako <img>
+const IMAGE_EXTS = [".png",".jpg",".jpeg",".webp",".gif",".avif",".bmp",".svg"];
+const isImage = p => IMAGE_EXTS.some(ext => (p||"").toLowerCase().endsWith(ext));
+
+function makeFileCard(meta){
+  const { file, title } = meta;
+
+  const thumb = isImage(file)
+    ? el('img', { src: `./${file}`, alt: title || file, class:'file-thumb', loading:'lazy', decoding:'async' })
+    : el('div', { class:'file-thumb', style:'display:grid;place-items:center' }, 'Podgląd niedostępny');
+
+  const name = el('div', { class:'file-name' }, title ? `${title} (${file})` : file);
+
+  const open = el('a', { class:'btn', href:`./${file}`, target:'_blank', rel:'noopener' }, 'Otwórz');
+  const dl   = el('a', { class:'btn', href:`./${file}`, download:'' }, 'Pobierz');
+
+  const actions = el('div', { class:'file-actions' }, open, dl);
+  return el('div', { class:'file-card' }, thumb, name, actions);
+}
+
+function renderFilesGrid(){
+  const wrap = document.getElementById('files-grid');
+  if(!wrap) return;
+  wrap.innerHTML = "";
+  FILES.forEach(f => wrap.appendChild(makeFileCard(f)));
+}
+
+// wyrenderuj listę plików po załadowaniu DOM
+document.addEventListener('DOMContentLoaded', renderFilesGrid);
