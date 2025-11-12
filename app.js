@@ -362,3 +362,16 @@ window.addEventListener('DOMContentLoaded', () => {
   loadCart();
   loadAndRender();
 });
+// === INICJALIZACJA STRONY (pewne renderowanie kart) ===
+window.addEventListener('DOMContentLoaded', () => {
+  try {
+    loadCart();
+    // najpierw pokaż produkty off-line (bez Supabase), żeby UI nie było puste
+    renderProducts();
+    renderCart();
+  } catch (e) {
+    console.error('Init UI error:', e);
+  }
+  // a potem dociągnij stany z Supabase i odśwież
+  loadAndRender();
+});
