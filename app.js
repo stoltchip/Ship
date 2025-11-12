@@ -1,13 +1,12 @@
-/* ========== KONFIGURACJA SUPABASE ========== */
+/* ========== KONFIGURACJA SUPABASE (JEDYNA) ========== */
 const SUPABASE_URL = 'https://rkuzmwmtxlwriuhumynb.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_J8jbXkHQgtHBHGzSc0IC-A_wtrvLejL';
 const EMAIL_ONTVANGER = localStorage.getItem('EMAIL_ONTVANGER') || 'magazijn@example.com';
 const ADMIN_PIN = '2468';
 
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-function getClient(){ return supabaseClient; }
-/* =========================================== */
-/* Productdefinities (ID komt overeen met 'slug' in DB) */
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+function getClient(){ return sb; }
+/* ==================================================== */
 const PRODUCTS = [
   {
     slug:'bodywarmer-hivis',
