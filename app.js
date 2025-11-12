@@ -58,7 +58,6 @@ async function upsertStock(rows){
 }
 
 async function decrementStock(item){
-  // item = {slug, size, qty}
   const { data, error } = await sb.rpc('decrement_stock', {
     p_slug:item.slug, p_size:item.size, p_qty:item.qty
   });
@@ -69,14 +68,10 @@ async function decrementStock(item){
 async function insertOrder(order){
   const { data, error } = await sb
     .from('orders')
-    .insert([order]) // MUSI być tablica
+    .insert([order])
     .select()
     .single();
-
-  if (error) {
-    console.error('insertOrder error:', error);
-    throw error;
-  }
+  if (error) { console.error('insertOrder error:', error); throw error; }
   return data;
 }
 
@@ -97,7 +92,7 @@ function sizeOptions(product){
   return ['<option value="">Kies maat…</option>'].concat(
     sizes.map(s=>{
       const hasEntry = Object.prototype.hasOwnProperty.call(stock, s);
-      const qty = hasEntry ? stock[s] : null; // null = jeszcze nie pobrano
+      const qty = hasEntry ? stock[s] : null;
       const disabled = (qty === 0) ? 'disabled' : '';
       const label = (qty === 0)
         ? `${s} — niet op voorraad`
@@ -254,8 +249,10 @@ function renderAdminTable(){
       <td><input class="qty-input" type="number" min="0" value="${r.qty}" data-slug="${r.slug}" data-size="${r.size}"/></td>
     </tr>`;
   });
-  html += '</tbody></table><div style="margin-top:8px"><button id="btn-save" class="btn primary">Opslaan</button></div>`;
+  // ⬇⬇⬇ TU BYŁ BŁĄD – usunąłem zbędny znak ` na końcu
+  html += '</tbody></table><div style="margin-top:8px"><button id="btn-save" class="btn primary">Opslaan</button></div>';
   container.innerHTML = html;
+
   $('#btn-save').addEventListener('click', async ()=>{
     const inputs = $$('.qty-input');
     const updates = inputs.map(i=>({slug:i.dataset.slug, size:i.dataset.size, quantity: Number(i.value||0)}));
@@ -324,12 +321,10 @@ async function loadAndRender(){
 window.addEventListener('DOMContentLoaded', () => {
   try {
     loadCart();
-    // najpierw pokaż UI offline
     renderProducts();
     renderCart();
   } catch (e) {
     console.error('Init UI error:', e);
   }
-  // potem dociągnij stany z Supabase
   loadAndRender();
 });
