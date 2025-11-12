@@ -1,3 +1,5 @@
+const STORAGE_CATALOG = "stolt_catalog_v3"; // nowa wersja cache
+
 const DEFAULT_CATALOG = [
   {
     id: "bodywarmer",
@@ -65,3 +67,8 @@ const DEFAULT_CATALOG = [
     ]
   }
 ];
+
+// === Dodajemy suffix "?v=3" do wszystkich obrazów ===
+DEFAULT_CATALOG.forEach(p => {
+  if (p.img && !p.img.includes('?v=')) p.img += '?v=3';
+});
